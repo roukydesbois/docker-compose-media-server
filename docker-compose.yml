@@ -1,0 +1,42 @@
+---
+version: "3.9"
+services:
+  traefik:
+    image: "traefik:v2.10"
+    container_name: "traefik"
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.tailscale=true"
+    ports:
+      - "80:80"
+      - "8080:8080"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    environment:
+      - PUID=${USER_ID}
+      - PGID=${GROUP_ID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ./transmission:/config
+      - /mnt/data/transmission/downloads:/downloads
+      - /mnt/data/transmission/watch:/watch
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
+    depends_on: traefik
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.transmission.rule=Host(`docker.tail9a43.ts.net`) && Path(`/transmission`)
+      - traefik.http.routers.whoami.entrypoints=websecure
+      - traefik.http.routers.blog.tls.certresolver=myresolver
