@@ -34,7 +34,8 @@ services:
       - 51413:51413
       - 51413:51413/udp
     restart: unless-stopped
-    depends_on: traefik
+    depends_on: 
+      - traefik
     labels:
       - traefik.enable=true
       - traefik.http.routers.transmission.rule=Host(`docker.tail9a43.ts.net`) && Path(`/transmission`)
