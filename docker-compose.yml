@@ -9,8 +9,7 @@ services:
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.address=${HOSTNAME}:443"
       - "--certificatesresolvers.myresolver.tailscale=true"
     ports:
       - "80:80"
@@ -38,6 +37,6 @@ services:
       - traefik
     labels:
       - traefik.enable=true
-      - traefik.http.routers.transmission.rule=Host(`docker.tail9a43.ts.net`) && Path(`/transmission`)
+      - traefik.http.routers.transmission.rule=Host(`$HOSTNAME`) && PathPrefix(`/transmission`)
       - traefik.http.routers.whoami.entrypoints=websecure
       - traefik.http.routers.blog.tls.certresolver=myresolver
