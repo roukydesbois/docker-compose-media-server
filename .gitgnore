@@ -1,9 +1,9 @@
 .env
-/transmission
-!/transmission/.gitkeep
-/buildarr
-!/buildarr/.gitkeep
-/jackett
-!/jackett/.gitkeep
-/radarr
-!/radarr/.gitkeep
+transmission
+!transmission/.gitkeep
+buildarr
+!buildarr/.gitkeep
+jackett
+!jackett/.gitkeep
+radarr
+!radarr/.gitkeep
