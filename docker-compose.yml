@@ -37,7 +37,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.transmission.rule=Host(`$TAILSCALE_HOSTNAME`) && PathPrefix(`/transmission`)
-      - traefik.http.routers.transmission.tls.certresolver=myresolver
+      - traefik.http.routers.transmission.tls.certresolver=mytailscale
       - traefik.http.services.transmission.loadbalancer.server.port=9091
 
   radarr:
@@ -59,6 +59,46 @@ services:
       - traefik.http.routers.radarr.rule=Host(`$TAILSCALE_HOSTNAME`) && PathPrefix(`/radarr`)
       - traefik.http.routers.radarr.tls.certresolver=mytailscale
       - traefik.http.services.radarr.loadbalancer.server.port=7878
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=${USER_ID}
+      - PGID=${GROUP_ID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ./sonarr:/config
+      - ${DATA_ROOT}:/data
+    restart: unless-stopped
+    depends_on:
+      - traefik
+      - transmission
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.sonarr.rule=Host(`$TAILSCALE_HOSTNAME`) && PathPrefix(`/sonarr`)
+      - traefik.http.routers.sonarr.tls.certresolver=mytailscale
+      - traefik.http.services.sonarr.loadbalancer.server.port=8989
+
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    environment:
+      - PUID=${USER_ID}
+      - PGID=${GROUP_ID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ./lidarr:/config
+      - ${DATA_ROOT}:/data
+    restart: unless-stopped
+    depends_on:
+      - traefik
+      - transmission
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.lidarr.rule=Host(`$TAILSCALE_HOSTNAME`) && PathPrefix(`/lidarr`)
+      - traefik.http.routers.lidarr.tls.certresolver=mytailscale
+      - traefik.http.services.lidarr.loadbalancer.server.port=8686
 
   buildarr:
     image: callum027/buildarr:latest
@@ -98,11 +138,33 @@ services:
       - PGID=${GROUP_ID}
       - TZ=${TIMEZONE}
     volumes:
-      - .jellyfin:/config
+      - ./jellyfin:/config
       - ${DATA_ROOT}/media:/data/media
     restart: unless-stopped
     labels:
       - traefik.enable=true
-      - traefik.http.routers.jackett.rule=Host(`$PUBLIC_HOSTNAME`)
-      - traefik.http.routers.jackett.tls.certresolver=myresolver
-      - traefik.http.services.jackett.loadbalancer.server.port=9117
+      - traefik.http.routers.jellyfin.rule=Host(`$TAILSCALE_HOSTNAME`) && PathPrefix(`/jellyfin`)
+      - traefik.http.routers.jellyfin.tls.certresolver=mytailscale
+      - traefik.http.services.jellyfin.loadbalancer.server.port=8096
+    depends_on:
+      - traefik
+
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    environment:
+      - PUID=${USER_ID}
+      - PGID=${GROUP_ID}
+      - TZ=${TIMEZONE}
+      - LOG_LEVEL=debug
+    volumes:
+      - ./jellyseer:/app/config
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.jellyseerr.rule=Host(`$TAILSCALE_HOSTNAME`) && PathPrefix(`/jellyseerr`)
+      - traefik.http.routers.jellyseerr.tls.certresolver=mytailscale
+      - traefik.http.services.jellyseerr.loadbalancer.server.port=8096
+    depends_on:
+      - traefik
+      - jellyfin
