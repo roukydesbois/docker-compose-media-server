@@ -5,21 +5,26 @@ services:
     image: "traefik:v3.0"
     container_name: "traefik"
     command:
-      - "--log.level=DEBUG"
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.mytailscale.tailscale=true"
-      - "--certificatesresolvers.myLE.acme.email=thomas@blarre.net"
-      - "--certificatesresolvers.myLE.acme.storage=acme.json"
-      - "--certificatesresolvers.myLE.acme.tlschallenge=true"
+      - --ping=true
+      - --log.level=DEBUG
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.mytailscale.tailscale=true
+      - --certificatesresolvers.myLE.acme.email=thomas@blarre.net
+      - --certificatesresolvers.myLE.acme.storage=acme.json
+      - --certificatesresolvers.myLE.acme.tlschallenge=true
     ports:
-      - "8080:8080"
-      - "443:443"
+      - 8080:8080
+      - 443:443
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "/var/run/tailscale/tailscaled.sock:/var/run/tailscale/tailscaled.sock"
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run/tailscale/tailscaled.sock:/var/run/tailscale/tailscaled.sock
+    healthcheck:
+      test: [ "CMD", "traefik", "healthcheck", "--ping" ]
+      interval: 5s
+      retries: 10
 
   transmission:
     image: lscr.io/linuxserver/transmission:latest
@@ -79,6 +84,10 @@ services:
       - traefik.http.routers.sonarr.rule=Host(`$TAILSCALE_HOSTNAME`) && PathPrefix(`/sonarr`)
       - traefik.http.routers.sonarr.tls.certresolver=mytailscale
       - traefik.http.services.sonarr.loadbalancer.server.port=8989
+    healthcheck:
+      test: [ "CMD", "curl", "--fail", "http://127.0.0.1:8989/sonarr/ping" ]
+      interval: 5s
+      retries: 10
 
   lidarr:
     image: lscr.io/linuxserver/lidarr:latest
