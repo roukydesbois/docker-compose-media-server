@@ -7,3 +7,11 @@ jackett
 !jackett/.gitkeep
 radarr
 !radarr/.gitkeep
+sonarr
+!sonarr/.gitkeep
+jellyfin
+!jellyfin/.gitkeep
+jellyseerr
+!jellyseerr/.gitkeep
+lidarr
+!lidarr/.gitkeep

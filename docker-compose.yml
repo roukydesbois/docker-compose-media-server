@@ -158,7 +158,7 @@ services:
       - TZ=${TIMEZONE}
       - LOG_LEVEL=debug
     volumes:
-      - ./jellyseer:/app/config
+      - ./jellyseerr:/app/config
     restart: unless-stopped
     labels:
       - traefik.enable=true
