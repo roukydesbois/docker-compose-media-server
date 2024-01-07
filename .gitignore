@@ -15,3 +15,7 @@ jellyseerr
 !jellyseerr/.gitkeep
 lidarr
 !lidarr/.gitkeep
+tailscale
+!tailscale/.gitkeep
+tailscale-socket
+!tailscale-socket/.gitkeep
