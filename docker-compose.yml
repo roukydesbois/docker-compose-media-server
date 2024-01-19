@@ -158,7 +158,7 @@ services:
       - traefik.http.routers.jackett.rule=Host(`$TAILSCALE_FULL_URL`) && PathPrefix(`/jackett`)
       - traefik.http.routers.jackett.tls.certresolver=mytailscale
       - traefik.http.services.jackett.loadbalancer.server.port=9117
-
+      
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
@@ -193,7 +193,7 @@ services:
       - traefik.enable=true
       - traefik.http.routers.jellyseerr.rule=Host(`$TAILSCALE_FULL_URL`) && PathPrefix(`/jellyseerr`)
       - traefik.http.routers.jellyseerr.tls.certresolver=mytailscale
-      - traefik.http.services.jellyseerr.loadbalancer.server.port=8096
+      - traefik.http.services.jellyseerr.loadbalancer.server.port=5055
     depends_on:
       - traefik
       - jellyfin
