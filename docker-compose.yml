@@ -30,7 +30,7 @@ services:
       - --providers.docker.exposedbydefault=false
       - --entrypoints.websecure.address=:443
       - --certificatesresolvers.mytailscale.tailscale=true
-      - --certificatesresolvers.myLE.acme.email=thomas@blarre.net
+      - --certificatesresolvers.myLE.acme.email=${LETS_ENCRYPT_EMAIL}
       - --certificatesresolvers.myLE.acme.storage=acme.json
       - --certificatesresolvers.myLE.acme.tlschallenge=true
     ports:
@@ -172,8 +172,8 @@ services:
     restart: unless-stopped
     labels:
       - traefik.enable=true
-      - traefik.http.routers.jellyfin.rule=Host(`$TAILSCALE_FULL_URL`) && PathPrefix(`/jellyfin`)
-      - traefik.http.routers.jellyfin.tls.certresolver=mytailscale
+      - traefik.http.routers.jellyfin.rule=Host(`$PUBLIC_JELLYFIN_URL`)
+      - traefik.http.routers.jellyfin.tls.certresolver=myLE
       - traefik.http.services.jellyfin.loadbalancer.server.port=8096
     depends_on:
       - traefik
@@ -191,8 +191,8 @@ services:
     restart: unless-stopped
     labels:
       - traefik.enable=true
-      - traefik.http.routers.jellyseerr.rule=Host(`$TAILSCALE_FULL_URL`) && PathPrefix(`/jellyseerr`)
-      - traefik.http.routers.jellyseerr.tls.certresolver=mytailscale
+      - traefik.http.routers.jellyseerr.rule=Host(`$PUBLIC_JELLYSEERR_URL`)
+      - traefik.http.routers.jellyseerr.tls.certresolver=myLE
       - traefik.http.services.jellyseerr.loadbalancer.server.port=5055
     depends_on:
       - traefik
