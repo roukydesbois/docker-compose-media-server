@@ -1,6 +1,16 @@
 ---
 version: "3.9"
 services:
+  media-folder-creator:
+    image: alpine:latest
+    environment:
+      - FOLDER_LIST_FILE=/folder_list.txt
+    volumes:
+      - ./media-folder-creator/create_folders.sh:/create_folders.sh
+      - ./media-folder-creator/folder_list.txt:/folder_list.txt
+      - ${DATA_ROOT}:/data
+    command: sh -c "/create_folders.sh $(cat $FOLDER_LIST_FILE | tr '\n' ' ')"
+
   tailscale:
     image: tailscale/tailscale:stable
     container_name: tailscale
