@@ -7,12 +7,11 @@ services:
       - PUID=${USER_ID}
       - PGID=${GROUP_ID}
       - TZ=${TIMEZONE}
-      - FOLDER_LIST_FILE=/folder_list.txt
     volumes:
       - ./media-folder-creator/create_folders.sh:/create_folders.sh
       - ./media-folder-creator/folder_list.txt:/folder_list.txt
       - ${DATA_ROOT}:/data
-    command: sh -c "/create_folders.sh $(cat $FOLDER_LIST_FILE | tr '\n' ' ')"
+    command: sh -c "/create_folders.sh $(cat /folder_list.txt | tr '\n' ' ')"
 
   tailscale:
     image: tailscale/tailscale:stable
