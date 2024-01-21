@@ -4,6 +4,9 @@ services:
   media-folder-creator:
     image: alpine:latest
     environment:
+      - PUID=${USER_ID}
+      - PGID=${GROUP_ID}
+      - TZ=${TIMEZONE}
       - FOLDER_LIST_FILE=/folder_list.txt
     volumes:
       - ./media-folder-creator/create_folders.sh:/create_folders.sh
