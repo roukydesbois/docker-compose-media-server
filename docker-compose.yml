@@ -170,7 +170,17 @@ services:
       - traefik.http.routers.jackett.rule=Host(`$TAILSCALE_FULL_URL`) && PathPrefix(`/jackett`)
       - traefik.http.routers.jackett.tls.certresolver=mytailscale
       - traefik.http.services.jackett.loadbalancer.server.port=9117
-      
+  
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    environment:
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - LOG_HTML=${LOG_HTML:-false}
+      - CAPTCHA_SOLVER=${CAPTCHA_SOLVER:-none}
+      - TZ=${TIMEZONE}
+    restart: unless-stopped
+
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
