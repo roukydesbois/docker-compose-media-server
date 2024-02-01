@@ -184,6 +184,8 @@ services:
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
+    ports:
+      - 8096:8096
     environment:
       - PUID=${USER_ID}
       - PGID=${GROUP_ID}
@@ -222,6 +224,8 @@ services:
 
   audiobookshelf:
     image: ghcr.io/advplyr/audiobookshelf:latest
+    ports:
+      - 13378:80
     environment:
       - PUID=${USER_ID}
       - PGID=${GROUP_ID}
