@@ -219,3 +219,20 @@ services:
     depends_on:
       - traefik
       - jellyfin
+
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    environment:
+      - PUID=${USER_ID}
+      - PGID=${GROUP_ID}
+    volumes:
+      - ${DATA_ROOT}/media/audiobookshelf/audiobooks:/audiobooks
+      - ${DATA_ROOT}/media/audiobookshelf/podcasts:/podcasts
+      - ${DATA_ROOT}/media/audiobookshelf/metadata:/metadata
+      - ./audiobookshelf:/config
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.jackett.rule=Host(`$TAILSCALE_FULL_URL`) && PathPrefix(`/audiobookshelf`)
+      - traefik.http.routers.jackett.tls.certresolver=mytailscale
+      - traefik.http.services.jackett.loadbalancer.server.port=80
+

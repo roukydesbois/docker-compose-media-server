@@ -19,3 +19,5 @@ tailscale
 !tailscale/.gitkeep
 tailscale-socket
 !tailscale-socket/.gitkeep
+audiobookshelf
+!audiobookshelf/.gitkeep
