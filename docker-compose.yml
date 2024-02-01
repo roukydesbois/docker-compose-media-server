@@ -237,7 +237,7 @@ services:
       - ./audiobookshelf:/config
     labels:
       - traefik.enable=true
-      - traefik.http.routers.jackett.rule=Host(`$TAILSCALE_FULL_URL`) && PathPrefix(`/audiobookshelf`)
-      - traefik.http.routers.jackett.tls.certresolver=mytailscale
-      - traefik.http.services.jackett.loadbalancer.server.port=80
+      - traefik.http.routers.audiobookshelf.rule=Host(`$TAILSCALE_FULL_URL`) && PathPrefix(`/audiobookshelf`)
+      - traefik.http.routers.audiobookshelf.tls.certresolver=mytailscale
+      - traefik.http.services.audiobookshelf.loadbalancer.server.port=80
 
