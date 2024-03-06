@@ -27,9 +27,9 @@ services:
       - ./tailscale-socket:/var/run/tailscale
     environment:
       - TS_AUTHKEY=${TAILSCALE_AUTHKEY}
-      - TS_AUTH_ONCE=true
       - TS_HOSTNAME=${TAILSCALE_HOSTNAME}
       - TS_SOCKET=/var/run/tailscale/tailscaled.sock
+      - TS_EXTRA_ARGS=--advertise-tags=tag:${TAILSCALE_TAG}
 
   traefik:
     image: "traefik:v3.0"
