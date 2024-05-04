@@ -30,6 +30,7 @@ services:
       - TS_HOSTNAME=${TAILSCALE_HOSTNAME}
       - TS_SOCKET=/var/run/tailscale/tailscaled.sock
       - TS_EXTRA_ARGS=--advertise-tags=tag:${TAILSCALE_TAG}
+      - TS_STATE_DIR=/var/lib/tailscale
 
   traefik:
     image: "traefik:v3.0"
@@ -184,6 +185,10 @@ services:
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
+    group_add:
+      - "106"
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
     ports:
       - 8096:8096
     environment:
