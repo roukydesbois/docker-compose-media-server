@@ -301,10 +301,11 @@ services:
       - "xpack.security.enabled=true"
       - "discovery.type=single-node"
       - "path.repo=/usr/share/elasticsearch/data/snapshot"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
+# Removing them as I run this in a LXC container
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
     volumes:
       - ./tubearchivist/es:/usr/share/elasticsearch/data    # check for permission error when using bind mount, see readme
     expose:
