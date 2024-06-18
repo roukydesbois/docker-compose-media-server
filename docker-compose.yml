@@ -267,9 +267,9 @@ services:
       - TZ=Europe/Lisbon                # set your time zone
     labels:
       - traefik.enable=true
-      - traefik.http.routers.jackett.rule=Host(`$TAILSCALE_FULL_URL`) && PathPrefix(`/tubearchivist`)
-      - traefik.http.routers.jackett.tls.certresolver=mytailscale
-      - traefik.http.services.jackett.loadbalancer.server.port=8000
+      - traefik.http.routers.tubearchivist.rule=Host(`$TAILSCALE_FULL_URL`) && PathPrefix(`/tubearchivist`)
+      - traefik.http.routers.tubearchivist.tls.certresolver=mytailscale
+      - traefik.http.services.tubearchivist.loadbalancer.server.port=8000
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 2m
