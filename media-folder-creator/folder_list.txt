@@ -3,6 +3,7 @@
 /data/media/tv
 /data/media/music
 /data/media/books
+/data/media/tubearchivist
 /data/torrents
 /data/torrents/movies
 /data/torrents/tv

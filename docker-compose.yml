@@ -246,3 +246,66 @@ services:
         #      - traefik.http.routers.audiobookshelf.tls.certresolver=mytailscale
         #      - traefik.http.services.audiobookshelf.loadbalancer.server.port=80
 
+  tubearchivist:
+    container_name: tubearchivist
+    restart: unless-stopped
+    image: bbilly1/tubearchivist
+#    ports:
+#      - 8000:8000
+    volumes:
+      - ${DATA_ROOT}/media/tubearchivist:/youtube
+      - ./tubearchivist/cache:/cache
+    environment:
+      - ES_URL=http://archivist-es:9200     # needs protocol e.g. http and port
+      - REDIS_HOST=archivist-redis          # don't add protocol
+      - HOST_UID=${USER_ID}
+      - HOST_GID=${GROUP_ID}
+      - TA_HOST=https://$TAILSCALE_FULL_URL/tubearchivist         # set your host name
+      - TA_USERNAME=$TA_USERNAME           # your initial TA credentials
+      - TA_PASSWORD=$TA_PASSWORD              # your initial TA credentials
+      - ELASTIC_PASSWORD=$TA_ES_PASSWORD         # set password for Elasticsearch
+      - TZ=Europe/Lisbon                # set your time zone
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.jackett.rule=Host(`$TAILSCALE_FULL_URL`) && PathPrefix(`/tubearchivist`)
+      - traefik.http.routers.jackett.tls.certresolver=mytailscale
+      - traefik.http.services.jackett.loadbalancer.server.port=8000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 2m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      - archivist-es
+      - archivist-redis
+
+  archivist-redis:
+    image: redis/redis-stack-server
+    container_name: archivist-redis
+    restart: unless-stopped
+    expose:
+      - "6379"
+    volumes:
+      - ./tubearchivist/redis:/data
+    depends_on:
+      - archivist-es
+
+  archivist-es:
+    image: bbilly1/tubearchivist-es         # only for amd64, or use official es 8.13.2
+    container_name: archivist-es
+    restart: unless-stopped
+    environment:
+      - "ELASTIC_PASSWORD=$TA_ES_PASSWORD"       # matching Elasticsearch password
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "xpack.security.enabled=true"
+      - "discovery.type=single-node"
+      - "path.repo=/usr/share/elasticsearch/data/snapshot"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./tubearchivist/es:/usr/share/elasticsearch/data    # check for permission error when using bind mount, see readme
+    expose:
+      - "9200"
