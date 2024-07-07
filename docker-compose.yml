@@ -1,17 +1,17 @@
 ---
 version: "3.9"
 services:
-  media-folder-creator:
-    image: alpine:latest
-    environment:
-      - PUID=${USER_ID}
-      - PGID=${GROUP_ID}
-      - TZ=${TIMEZONE}
-    volumes:
-      - ./media-folder-creator/create_folders.sh:/create_folders.sh
-      - ./media-folder-creator/folder_list.txt:/folder_list.txt
-      - ${DATA_ROOT}:/data
-    command: sh -c "/create_folders.sh $(cat /folder_list.txt | tr '\n' ' ')"
+  # media-folder-creator:
+  #   image: alpine:latest
+  #   environment:
+  #     - PUID=${USER_ID}
+  #     - PGID=${GROUP_ID}
+  #     - TZ=${TIMEZONE}
+  #   volumes:
+  #     - ./media-folder-creator/create_folders.sh:/create_folders.sh
+  #     - ./media-folder-creator/folder_list.txt:/folder_list.txt
+  #     - ${DATA_ROOT}:/data
+  #   command: sh -c "/create_folders.sh $(cat /folder_list.txt | tr '\n' ' ')"
 
   tailscale:
     image: tailscale/tailscale:stable
@@ -142,18 +142,18 @@ services:
       - traefik.http.routers.lidarr.tls.certresolver=mytailscale
       - traefik.http.services.lidarr.loadbalancer.server.port=8686
 
-  buildarr:
-    image: callum027/buildarr:latest
-    container_name: buildarr
-    environment:
-      - PUID=${USER_ID}
-      - PGID=${GROUP_ID}
-      - TZ=${TIMEZONE}
-    restart: always
-    volumes:
-      - ./buildarr:/config:ro
-    depends_on:
-      - radarr
+  # buildarr:
+  #   image: callum027/buildarr:latest
+  #   container_name: buildarr
+  #   environment:
+  #     - PUID=${USER_ID}
+  #     - PGID=${GROUP_ID}
+  #     - TZ=${TIMEZONE}
+  #   restart: always
+  #   volumes:
+  #     - ./buildarr:/config:ro
+  #   depends_on:
+  #     - radarr
 
   jackett:
     image: lscr.io/linuxserver/jackett:latest
